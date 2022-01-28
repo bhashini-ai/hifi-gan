@@ -46,11 +46,11 @@ def inference(a):
     with torch.no_grad():
         for i, filname in enumerate(filelist):
             x = np.load(os.path.join(a.input_mels_dir, filname))
+            x = torch.FloatTensor(x).to(device)
             if len(x.shape) < 3:
                 x = x.unsqueeze(0)
             if not x.shape[1] == h.num_mels:
                 x = x.transpose(1, 2) 
-            x = torch.FloatTensor(x).to(device)
             y_g_hat = generator(x)
             audio = y_g_hat.squeeze()
             audio = audio * MAX_WAV_VALUE
