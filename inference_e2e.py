@@ -37,7 +37,7 @@ def inference(a):
     state_dict_g = load_checkpoint(a.checkpoint_file, device)
     generator.load_state_dict(state_dict_g['generator'])
 
-    filelist = os.listdir(a.input_mels_dir)
+    filelist = glob.glob(os.path.join(a.input_mels_dir, '*.npy'))
 
     os.makedirs(a.output_dir, exist_ok=True)
 
