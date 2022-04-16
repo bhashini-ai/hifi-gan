@@ -52,12 +52,11 @@ def inference(a):
                 x = x.unsqueeze(0)
             if not x.shape[1] == h.num_mels:
                 x = x.transpose(1, 2) 
-            y_g_hat = generator(x)
-            audio = y_g_hat.squeeze()
+            audio = generator(x)
             if a.d:
                 denoiser = Denoiser(generator).cuda()
                 audio = denoiser(audio, 0.1)
-                audio = audio.squeeze()
+            audio = audio.squeeze()
             audio = audio * MAX_WAV_VALUE
             audio = audio.cpu().numpy().astype('int16')
 

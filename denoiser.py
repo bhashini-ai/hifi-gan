@@ -26,7 +26,7 @@
 # *****************************************************************************
 
 import torch
-from utils.stft import STFT
+from stft import STFT
 
 class Denoiser(torch.nn.Module):
     """ Removes model bias from audio produced with HiFi-GAN """
@@ -45,7 +45,7 @@ class Denoiser(torch.nn.Module):
             raise Exception("Mode {} if not supported".format(mode))
 
         with torch.no_grad():
-            bias_audio = hifigan.infer(mel_input, sigma=0.0).float()
+            bias_audio = hifigan(mel_input).float()
             bias_spec, _ = self.stft.transform(bias_audio)
 
         self.register_buffer('bias_spec', bias_spec[:, :, 0][:, :, None])
