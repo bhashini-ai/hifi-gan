@@ -9,6 +9,7 @@ from scipy.io.wavfile import write
 from env import AttrDict
 from meldataset import mel_spectrogram, MAX_WAV_VALUE, load_wav
 from models import Generator
+from denoiser import Denoiser
 
 h = None
 device = None
@@ -54,6 +55,11 @@ def inference(a):
             x = get_mel(wav.unsqueeze(0))
             y_g_hat = generator(x)
             audio = y_g_hat.squeeze()
+            if args.d:
+                denoiser = Denoiser(model).cuda()
+                audio = denoiser(audio, 0.1)
+            audio = audio.squeeze()
+            audio = audio[:-(h.hop_size*10)]
             audio = audio * MAX_WAV_VALUE
             audio = audio.cpu().numpy().astype('int16')
 
@@ -69,6 +75,7 @@ def main():
     parser.add_argument('--input_wavs_dir', default='test_files')
     parser.add_argument('--output_dir', default='generated_files')
     parser.add_argument('--checkpoint_file', required=True)
+    parser.add_argument('-d', action='store_true', help="denoising ")
     a = parser.parse_args()
 
     config_file = os.path.join(os.path.split(a.checkpoint_file)[0], 'config.json')
