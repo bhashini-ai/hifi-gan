@@ -10,6 +10,7 @@ from scipy.io.wavfile import write
 from env import AttrDict
 from meldataset import MAX_WAV_VALUE
 from models import Generator
+from denoiser import Denoiser
 
 h = None
 device = None
@@ -53,6 +54,10 @@ def inference(a):
                 x = x.transpose(1, 2) 
             y_g_hat = generator(x)
             audio = y_g_hat.squeeze()
+            if a.d:
+                denoiser = Denoiser(generator).cuda()
+                audio = denoiser(audio, 0.1)
+                audio = audio.squeeze()
             audio = audio * MAX_WAV_VALUE
             audio = audio.cpu().numpy().astype('int16')
 

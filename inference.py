@@ -55,11 +55,11 @@ def inference(a):
             x = get_mel(wav.unsqueeze(0))
             y_g_hat = generator(x)
             audio = y_g_hat.squeeze()
-            if args.d:
-                denoiser = Denoiser(model).cuda()
+            if a.d:
+                denoiser = Denoiser(generator).cuda()
                 audio = denoiser(audio, 0.1)
-            audio = audio.squeeze()
-            audio = audio[:-(h.hop_size*10)]
+                audio = audio.squeeze()
+            #audio = audio[:-(h.hop_size*10)]
             audio = audio * MAX_WAV_VALUE
             audio = audio.cpu().numpy().astype('int16')
 
