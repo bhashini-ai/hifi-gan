@@ -73,6 +73,7 @@ def main():
     parser.add_argument('--input_mels_dir', default='test_mel_files')
     parser.add_argument('--output_dir', default='generated_files_from_mel')
     parser.add_argument('--checkpoint_file', required=True)
+    parser.add_argument('-d', action='store_true', help="denoising ")
     a = parser.parse_args()
 
     config_file = os.path.join(os.path.split(a.checkpoint_file)[0], 'config.json')
